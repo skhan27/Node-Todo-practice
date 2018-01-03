@@ -12,6 +12,7 @@ var UserSchema = new mongoose.Schema({
         minlength: 1,
         unique: true,
         validate: {
+            isAsync: false,
             validator: validator.isEmail,
             message: '{VALUE} is not a valid email'     
         }
@@ -74,9 +75,9 @@ UserSchema.statics.findByToken = function (token) {
 UserSchema.pre('save', function (next) {
     var user = this;
     if (user.isModified('password')) {
-        password = user.password;
         bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(password, salt, (err, hash) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                
                 user.password = hash;
                 next();
             });
