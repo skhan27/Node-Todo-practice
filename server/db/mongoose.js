@@ -1,3 +1,5 @@
+//set up mongoose and the MONGODB_URI 
+
 var mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;

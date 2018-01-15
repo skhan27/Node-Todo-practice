@@ -1,3 +1,9 @@
+/*
+Configuration of environment variable. Set env to either the process.env.NODE_ENV for production or test or set to development.
+config.json stores the different environment variables if the code is being run in dev mode or test. We get the variables from
+that file and set the env variables. The environment variables for production are set using heroku commands 
+*/ 
+
 var env = process.env.NODE_ENV || 'development';
 
 
@@ -11,10 +17,3 @@ if (env === 'development' || env === 'test') {
 }
 
 console.log('env ****************', env);
-// if (env === 'development') {
-//     process.env.PORT = 3000;
-//     process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoApp';
-// } else if (env === 'test') {
-//     process.env.PORT = 3000;
-//     process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoAppTest';
-// }

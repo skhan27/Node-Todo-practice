@@ -1,9 +1,10 @@
-require('./config/config');
+require('./config/config'); //set the environment variables 
 
 const _ = require('lodash');
 var express = require('express');
 var bodyParser = require('body-parser');
 
+//get models and middleware
 var { mongoose } = require('./db/mongoose');
 var { Todo } = require('./models/todo');
 var { User } = require('./models/user');
@@ -14,12 +15,13 @@ var {authenticate} = require('./middleware/authenticate');
 var app = express();
 const port = process.env.PORT;
 
+//parse the incoming requests using bodyparser. we can then access all properties from req.body
 app.use(bodyParser.json());
 
 app.post('/todos', authenticate, (req, res) => {
     var todo = new Todo({
         text: req.body.text,
-        _creator: req.user._id
+        _creator: req.user._id //set using the authenticate middleware
     });
 
     todo.save().then((doc) => {

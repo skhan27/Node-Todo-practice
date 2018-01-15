@@ -1,3 +1,7 @@
+/* 
+    Set up user model and methods. user must have a valid email and a password that is atleast 6 characters long. Tokens is an array for the different tokens for each user (in the case of multiple log ins)
+*/
+
 const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
@@ -34,12 +38,14 @@ var UserSchema = new mongoose.Schema({
     }]
 });
 
+//Return the id and email of the user from all the other details stored in the DB
 UserSchema.methods.toJSON = function () {
     var user = this;
     var userObject =  user.toObject();
     return _.pick(userObject, ['_id', 'email'])
 };
 
+//creates an authentication token for the user. JWT_SECRET is an environment variable set in config.json or on the production machine. returns the newly generated token
 UserSchema.methods.generateAuthToken = function () {
     var user = this;
     var access = 'auth';
@@ -52,6 +58,7 @@ UserSchema.methods.generateAuthToken = function () {
     });
 };
 
+//removes the provided token from the tokens array for 'logging out'
 UserSchema.methods.removeToken = function (token) {
     var user = this;
 
@@ -64,6 +71,7 @@ UserSchema.methods.removeToken = function (token) {
     });
 };
 
+//finds the user using the token provided. 
 UserSchema.statics.findByToken = function (token) {
     var User = this;
     var decoded;
@@ -84,6 +92,8 @@ UserSchema.statics.findByToken = function (token) {
     });
 };
 
+
+//salts and hashes the password prior to saving the user to the database
 UserSchema.pre('save', function (next) {
     var user = this;
     if (user.isModified('password')) {
@@ -100,6 +110,7 @@ UserSchema.pre('save', function (next) {
     }
 });
 
+//finding a user by email and password. If there is a user with the email provided, the password is then compared to the salted and hashed password using the compare function provided by bcrypt
 UserSchema.statics.findByCredentials = function(email, password) {
     var User = this;
      return User.findOne({email}).then((user) => {
